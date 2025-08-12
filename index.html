@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carwash Services Daily Sales Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .date-display {
+            text-align: right;
+            margin-bottom: 20px;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .add-row {
+            background-color: #2ecc71;
+        }
+        .add-row:hover {
+            background-color: #27ae60;
+        }
+        .delete-row {
+            background-color: #e74c3c;
+        }
+        .delete-row:hover {
+            background-color: #c0392b;
+        }
+        .export-btn {
+            background-color: #9b59b6;
+        }
+        .export-btn:hover {
+            background-color: #8e44ad;
+        }
+        .spreadsheet {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            display: block;
+        }
+        .spreadsheet th, .spreadsheet td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .spreadsheet th {
+            background-color: #34495e;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        .spreadsheet tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .spreadsheet tr:hover {
+            background-color: #e9f7fe;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        .total-row {
+            background-color: #34495e !important;
+            color: white;
+            font-weight: bold;
+        }
+        .formula-display {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 5px solid #3498db;
+            border-radius: 4px;
+        }
+        .formula-display h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Sales & Commission Report</h1>
+        <div class="date-display" id="current-date">Date: <span id="date"></span></div>
+        
+        <div class="controls">
+            <button class="add-row" id="add-row">Add New Entry</button>
+            <button class="delete-row" id="delete-row">Delete Last Entry</button>
+            <button class="export-btn" id="export-csv">Export to CSV</button>
+        </div>
+
+        <div class="spreadsheet-container">
+            <table class="spreadsheet" id="sales-table">
+                <thead>
+                    <tr>
+                        <th>Name Personnel A</th>
+                        <th>Name Personnel B</th>
+                        <th>Name Personnel C</th>
+                        <th>Name Personnel D</th>
+                        <th>Plate #</th>
+                        <th>Model</th>
+                        <th>Service Provided</th>
+                        <th>Price (₱)</th>
+                        <th>Payment Method</th>
+                        <th>Commission (₱)</th>
+                        <th>Comm (A)</th>
+                        <th>Comm (B)</th>
+                        <th>Comm (C)</th>
+                        <th>Comm (D)</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr>
+                        <td><input type="text" class="personnel" data-person="0"></td>
+                        <td><input type="text" class="personnel" data-person="1"></td>
+                        <td><input type="text" class="personnel" data-person="2"></td>
+                        <td><input type="text" class="personnel" data-person="3"></td>
+                        <td><input type="text" class="plate"></td>
+                        <td><input type="text" class="model"></td>
+                        <td>
+                            <select class="service">
+                                <option value="Car Wash">Car Wash</option>
+                                <option value="Ceramic Coating">Ceramic Coating</option>
+                                <option value="Exterior Detailing">Exterior Detailing</option>
+                                <option value="Interior Detailing">Interior Detailing</option>
+                            </select>
+                        </td>
+                        <td><input type="number" min="0" step="0.01" class="price"></td>
+                        <td>
+                            <select class="payment">
+                                <option value="Cash">Cash</option>
+                                <option value="GCash">GCash</option>
+                            </select>
+                        </td>
+                        <td class="commission-cell">0.00</td>
+                        <td class="comm-person" data-person="0">0.00</td>
+                        <td class="comm-person" data-person="1">0.00</td>
+                        <td class="comm-person" data-person="2">0.00</td>
+                        <td class="comm-person" data-person="3">0.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="5">TOTAL CASH</td>
+                        <td id="total-cash">0.00</td>
+                        <td colspan="5">TOTAL GCASH</td>
+                        <td id="total-gcash">0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="5">TOTAL SALES</td>
+                        <td id="total-sales">0.00</td>
+                        <td colspan="5">TOTAL COMMISSIONS</td>
+                        <td id="total-commissions">0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="5">TOTAL COMM PERSONNEL A</td>
+                        <td id="total-personnel-0">0.00</td>
+                        <td colspan="5">TOTAL COMM PERSONNEL B</td>
+                        <td id="total-personnel-1">0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="5">TOTAL COMM PERSONNEL C</td>
+                        <td id="total-personnel-2">0.00</td>
+                        <td colspan="5">TOTAL COMM PERSONNEL D</td>
+                        <td id="total-personnel-3">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="formula-display">
+            <h3>Commission Formula:</h3>
+            <ul>
+                <li><strong>Car Wash:</strong> 40% of price (split among personnel with names entered)</li>
+                <li><strong>Ceramic Coating, Exterior Detailing, Interior Detailing:</strong> 30% of price (split among personnel with names entered)</li>
+                <li>If multiple personnel are listed, commission is divided equally among those with names</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+            
+            const tableBody = document.getElementById('table-body');
+            const addRowBtn = document.getElementById('add-row');
+            const deleteRowBtn = document.getElementById('delete-row');
+            const exportBtn = document.getElementById('export-csv');
+            
+            // Add new row
+            addRowBtn.addEventListener('click', function() {
+                addNewRow();
+            });
+            
+            // Delete last row
+            deleteRowBtn.addEventListener('click', function() {
+                const rows = tableBody.querySelectorAll('tr');
+                if (rows.length > 1) {
+                    tableBody.removeChild(rows[rows.length - 1]);
+                    updateTotals();
+                }
+            });
+            
+            // Export to CSV
+            exportBtn.addEventListener('click', exportToCSV);
+            
+            // Add event listeners for input changes
+            tableBody.addEventListener('input', function(e) {
+                if (e.target.classList.contains('personnel') || 
+                    e.target.classList.contains('service') || 
+                    e.target.classList.contains('price')) {
+                    updateCommissions(e.target.closest('tr'));
+                    updateTotals();
+                }
+            });
+            
+            function addNewRow() {
+                const newRow = document.createElement('tr');
+                
+                newRow.innerHTML = `
+                    <td><input type="text" class="personnel" data-person="0"></td>
+                    <td><input type="text" class="personnel" data-person="1"></td>
+                    <td><input type="text" class="personnel" data-person="2"></td>
+                    <td><input type="text" class="personnel" data-person="3"></td>
+                    <td><input type="text" class="plate"></td>
+                    <td><input type="text" class="model"></td>
+                    <td>
+                        <select class="service">
+                            <option value="Car Wash">Car Wash</option>
+                            <option value="Ceramic Coating">Ceramic Coating</option>
+                            <option value="Exterior Detailing">Exterior Detailing</option>
+                            <option value="Interior Detailing">Interior Detailing</option>
+                        </select>
+                    </td>
+                    <td><input type="number" min="0" step="0.01" class="price"></td>
+                    <td>
+                        <select class="payment">
+                            <option value="Cash">Cash</option>
+                            <option value="GCash">GCash</option>
+                        </select>
+                    </td>
+                    <td class="commission-cell">0.00</td>
+                    <td class="comm-person" data-person="0">0.00</td>
+                    <td class="comm-person" data-person="1">0.00</td>
+                    <td class="comm-person" data-person="2">0.00</td>
+                    <td class="comm-person" data-person="3">0.00</td>
+                `;
+                
+                tableBody.appendChild(newRow);
+                updateTotals();
+            }
+            
+            function updateCommissions(row) {
+                const service = row.querySelector('.service').value;
+                const price = parseFloat(row.querySelector('.price').value) || 0;
+                const personnel = [];
+                
+                // Collect personnel names
+                const personnelInputs = row.querySelectorAll('.personnel');
+                personnelInputs.forEach(input => {
+                    const name = input.value.trim();
+                    if (name) {
+                        personnel.push(name);
+                    }
+                });
+                
+                // Calculate commission based on service type
+                let commissionRate;
+                if (service === 'Car Wash') {
+                    commissionRate = 0.4;
+                } else if (service === 'Ceramic Coating' || 
+                           service === 'Exterior Detailing' || 
+                           service === 'Interior Detailing') {
+                    commissionRate = 0.3;
+                } else {
+                    commissionRate = 0;
+                }
+                
+                const totalCommission = price * commissionRate;
+                const activePersonnelCount = personnel.length;
+                const sharedCommission = activePersonnelCount > 0 ? totalCommission / activePersonnelCount : 0;
+                
+                // Update total commission cell
+                row.querySelector('.commission-cell').textContent = totalCommission.toFixed(2);
+                
+                // Update individual commission cells
+                const commCells = row.querySelectorAll('.comm-person');
+                commCells.forEach((cell, index) => {
+                    const hasName = row.querySelector(`.personnel[data-person="${index}"]`).value.trim() !== '';
+                    cell.textContent = hasName ? sharedCommission.toFixed(2) : '0.00';
+                });
+            }
+            
+            function updateTotals() {
+                const rows = tableBody.querySelectorAll('tr');
+                let totalCash = 0;
+                let totalGCash = 0;
+                let totalSales = 0;
+                let totalCommissions = 0;
+                const personnelTotals = [0, 0, 0, 0];
+                
+                rows.forEach(row => {
+                    const price = parseFloat(row.querySelector('.price').value) || 0;
+                    const paymentMethod = row.querySelector('.payment').value;
+                    const commission = parseFloat(row.querySelector('.commission-cell').textContent) || 0;
+                    
+                    totalSales += price;
+                    totalCommissions += commission;
+                    
+                    if (paymentMethod === 'Cash') {
+                        totalCash += price;
+                    } else if (paymentMethod === 'GCash') {
+                        totalGCash += price;
+                    }
+
+                    // Update personnel commissions
+                    const commCells = row.querySelectorAll('.comm-person');
+                    commCells.forEach((cell, index) => {
+                        personnelTotals[index] += parseFloat(cell.textContent) || 0;
+                    });
+                });
+                
+                document.getElementById('total-cash').textContent = totalCash.toFixed(2);
+                document.getElementById('total-gcash').textContent = totalGCash.toFixed(2);
+                document.getElementById('total-sales').textContent = totalSales.toFixed(2);
+                document.getElementById('total-commissions').textContent = totalCommissions.toFixed(2);
+                
+                // Update personnel totals
+                for (let i = 0; i < 4; i++) {
+                    document.getElementById(`total-personnel-${i}`).textContent = personnelTotals[i].toFixed(2);
+                }
+            }
+            
+            function exportToCSV() {
+                let csv = [];
+                const headers = [];
+                
+                // Get headers
+                const headerCells = document.querySelectorAll('#sales-table thead th');
+                headerCells.forEach(cell => {
+                    headers.push(cell.textContent.trim());
+                });
+                csv.push(headers.join(','));
+                
+                // Get data rows
+                const rows = tableBody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const rowData = [];
+                    const inputs = row.querySelectorAll('input, select');
+                    
+                    inputs.forEach(input => {
+                        if (input.classList.contains('service')) {
+                            rowData.push(input.value);
+                        } else if (input.classList.contains('price')) {
+                            rowData.push(parseFloat(input.value) || 0);
+                        } else {
+                            rowData.push(input.value);
+                        }
+                    });
+                    
+                    // Add the calculated commissions
+                    rowData.push(row.querySelector('.commission-cell').textContent);
+                    const commCells = row.querySelectorAll('.comm-person');
+                    commCells.forEach(cell => {
+                        rowData.push(cell.textContent);
+                    });
+                    
+                    csv.push(rowData.join(','));
+                });
+                
+                // Create CSV file
+                const csvContent = csv.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'carwash_sales_report.csv');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+    </script>
+</body>
+</html>
