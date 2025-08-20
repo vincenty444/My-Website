@@ -160,10 +160,12 @@
                 </thead>
                 <tbody id="table-body">
                     <tr>
+                        <td><input type="text" class="time"></td>
                         <td><input type="text" class="personnel" data-person="0"></td>
                         <td><input type="text" class="personnel" data-person="1"></td>
                         <td><input type="text" class="personnel" data-person="2"></td>
                         <td><input type="text" class="personnel" data-person="3"></td>
+                        <td><input type="text" class="personnel" data-person="4"></td>
                         <td><input type="text" class="plate"></td>
                         <td><input type="text" class="model"></td>
                         <td>
@@ -273,6 +275,7 @@
                 const newRow = document.createElement('tr');
                 
                 newRow.innerHTML = `
+                    <td><input type="text" class="time"></td>
                     <td><input type="text" class="personnel" data-person="0"></td>
                     <td><input type="text" class="personnel" data-person="1"></td>
                     <td><input type="text" class="personnel" data-person="2"></td>
@@ -440,4 +443,5 @@
     </script>
 </body>
 </html>
+
 
