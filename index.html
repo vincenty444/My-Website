@@ -359,7 +359,7 @@
                 let totalGCash = 0;
                 let totalSales = 0;
                 let totalCommissions = 0;
-                const personnelTotals = [0, 0, 0, 0, 0,];
+                const personnelTotals = [0, 0, 0, 0, 0];
                 
                 rows.forEach(row => {
                     const price = parseFloat(row.querySelector('.price').value) || 0;
@@ -388,7 +388,7 @@
                 document.getElementById('total-commissions').textContent = totalCommissions.toFixed(2);
                 
                 // Update personnel totals
-                for (let i = 0; i < 4; i++) {
+                for (let i = 0; i < 5; i++) {
                     document.getElementById(`total-personnel-${i}`).textContent = personnelTotals[i].toFixed(2);
                 }
             }
@@ -445,6 +445,7 @@
     </script>
 </body>
 </html>
+
 
 
 
