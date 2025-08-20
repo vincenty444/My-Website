@@ -139,10 +139,12 @@
             <table class="spreadsheet" id="sales-table">
                 <thead>
                     <tr>
+                        <th>TIME</th>
                         <th>Name Personnel A</th>
                         <th>Name Personnel B</th>
                         <th>Name Personnel C</th>
                         <th>Name Personnel D</th>
+                        <th>Name Personnel E</th>
                         <th>Plate #</th>
                         <th>Model</th>
                         <th>Service Provided</th>
@@ -153,6 +155,7 @@
                         <th>Comm (B)</th>
                         <th>Comm (C)</th>
                         <th>Comm (D)</th>
+                        <th>Comm (E)</th>
                     </tr>
                 </thead>
                 <tbody id="table-body">
@@ -183,6 +186,7 @@
                         <td class="comm-person" data-person="1">0.00</td>
                         <td class="comm-person" data-person="2">0.00</td>
                         <td class="comm-person" data-person="3">0.00</td>
+                        <td class="comm-person" data-person="4">0.00</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -209,6 +213,8 @@
                         <td id="total-personnel-2">0.00</td>
                         <td colspan="5">TOTAL COMM PERSONNEL D</td>
                         <td id="total-personnel-3">0.00</td>
+                        <td colspan="5">TOTAL COMM PERSONNEL E</td>
+                        <td id="total-personnel-4">0.00</td>
                     </tr>
                 </tfoot>
             </table>
@@ -271,6 +277,7 @@
                     <td><input type="text" class="personnel" data-person="1"></td>
                     <td><input type="text" class="personnel" data-person="2"></td>
                     <td><input type="text" class="personnel" data-person="3"></td>
+                    <td><input type="text" class="personnel" data-person="4"></td>
                     <td><input type="text" class="plate"></td>
                     <td><input type="text" class="model"></td>
                     <td>
@@ -293,6 +300,7 @@
                     <td class="comm-person" data-person="1">0.00</td>
                     <td class="comm-person" data-person="2">0.00</td>
                     <td class="comm-person" data-person="3">0.00</td>
+                    <td class="comm-person" data-person="4">0.00</td>
                 `;
                 
                 tableBody.appendChild(newRow);
@@ -346,7 +354,7 @@
                 let totalGCash = 0;
                 let totalSales = 0;
                 let totalCommissions = 0;
-                const personnelTotals = [0, 0, 0, 0];
+                const personnelTotals = [0, 0, 0, 0, 0];
                 
                 rows.forEach(row => {
                     const price = parseFloat(row.querySelector('.price').value) || 0;
@@ -432,3 +440,4 @@
     </script>
 </body>
 </html>
+
